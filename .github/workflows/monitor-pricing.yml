@@ -1,0 +1,182 @@
+name: Monitor Pricing Changes
+
+on:
+  schedule:
+    # Run every 6 hours
+    - cron: '0 */6 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  monitor:
+    runs-on: ubuntu-latest
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+      
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      
+      - name: Check data freshness
+        id: freshness
+        run: |
+          LAST_UPDATED=$(jq -r '.lastUpdated' data/llm-pricing.json)
+          LAST_TIMESTAMP=$(date -d "$LAST_UPDATED" +%s)
+          CURRENT_TIMESTAMP=$(date +%s)
+          HOURS_OLD=$(( ($CURRENT_TIMESTAMP - $LAST_TIMESTAMP) / 3600 ))
+          
+          echo "last_updated=$LAST_UPDATED" >> $GITHUB_OUTPUT
+          echo "hours_old=$HOURS_OLD" >> $GITHUB_OUTPUT
+          
+          if [ $HOURS_OLD -gt 48 ]; then
+            echo "stale=true" >> $GITHUB_OUTPUT
+            echo "⚠️ Data is $HOURS_OLD hours old (threshold: 48 hours)"
+          else
+            echo "stale=false" >> $GITHUB_OUTPUT
+            echo "✅ Data is $HOURS_OLD hours old"
+          fi
+      
+      - name: Analyze pricing trends
+        run: |
+          node -e "
+          const fs = require('fs');
+          const data = JSON.parse(fs.readFileSync('data/llm-pricing.json', 'utf-8'));
+          
+          // Calculate statistics
+          const stats = {
+            providers: data.providers.length,
+            totalModels: 0,
+            avgInputPrice: 0,
+            avgOutputPrice: 0,
+            cheapestInput: { price: Infinity, model: '', provider: '' },
+            cheapestOutput: { price: Infinity, model: '', provider: '' },
+            mostExpensiveInput: { price: 0, model: '', provider: '' },
+            mostExpensiveOutput: { price: 0, model: '', provider: '' }
+          };
+          
+          let inputSum = 0, outputSum = 0;
+          
+          data.providers.forEach(provider => {
+            provider.models.forEach(model => {
+              stats.totalModels++;
+              inputSum += model.pricing.input;
+              outputSum += model.pricing.output;
+              
+              // Track cheapest
+              if (model.pricing.input < stats.cheapestInput.price) {
+                stats.cheapestInput = {
+                  price: model.pricing.input,
+                  model: model.name,
+                  provider: provider.name
+                };
+              }
+              
+              if (model.pricing.output < stats.cheapestOutput.price) {
+                stats.cheapestOutput = {
+                  price: model.pricing.output,
+                  model: model.name,
+                  provider: provider.name
+                };
+              }
+              
+              // Track most expensive
+              if (model.pricing.input > stats.mostExpensiveInput.price) {
+                stats.mostExpensiveInput = {
+                  price: model.pricing.input,
+                  model: model.name,
+                  provider: provider.name
+                };
+              }
+              
+              if (model.pricing.output > stats.mostExpensiveOutput.price) {
+                stats.mostExpensiveOutput = {
+                  price: model.pricing.output,
+                  model: model.name,
+                  provider: provider.name
+                };
+              }
+            });
+          });
+          
+          stats.avgInputPrice = (inputSum / stats.totalModels).toFixed(2);
+          stats.avgOutputPrice = (outputSum / stats.totalModels).toFixed(2);
+          
+          // Save report
+          fs.writeFileSync('pricing-report.json', JSON.stringify(stats, null, 2));
+          
+          // Output summary
+          console.log('## Pricing Analysis Report');
+          console.log('');
+          console.log('### Overview');
+          console.log('- Providers:', stats.providers);
+          console.log('- Total Models:', stats.totalModels);
+          console.log('- Average Input Price: $' + stats.avgInputPrice + '/1M tokens');
+          console.log('- Average Output Price: $' + stats.avgOutputPrice + '/1M tokens');
+          console.log('');
+          console.log('### Cheapest Models');
+          console.log('- Input: ' + stats.cheapestInput.provider + ' - ' + stats.cheapestInput.model + ' ($' + stats.cheapestInput.price + ')');
+          console.log('- Output: ' + stats.cheapestOutput.provider + ' - ' + stats.cheapestOutput.model + ' ($' + stats.cheapestOutput.price + ')');
+          console.log('');
+          console.log('### Most Expensive Models');
+          console.log('- Input: ' + stats.mostExpensiveInput.provider + ' - ' + stats.mostExpensiveInput.model + ' ($' + stats.mostExpensiveInput.price + ')');
+          console.log('- Output: ' + stats.mostExpensiveOutput.provider + ' - ' + stats.mostExpensiveOutput.model + ' ($' + stats.mostExpensiveOutput.price + ')');
+          "
+      
+      - name: Create issue if data is stale
+        if: steps.freshness.outputs.stale == 'true'
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const title = `⏰ Pricing Data is Stale - ${new Date().toISOString().split('T')[0]}`;
+            const body = `## Stale Pricing Data Alert
+            
+            The LLM pricing data hasn't been updated in **${{ steps.freshness.outputs.hours_old }} hours**.
+            
+            **Last Updated**: ${{ steps.freshness.outputs.last_updated }}
+            **Threshold**: 48 hours
+            
+            ### Recommended Actions
+            1. Check if the automated update workflow is running correctly
+            2. Review recent workflow runs for errors
+            3. Manually trigger an update if needed
+            4. Check if provider websites have changed their structure
+            
+            ### Quick Links
+            - [Update Workflow Runs](https://github.com/${{ github.repository }}/actions/workflows/update-pricing.yml)
+            - [Trigger Manual Update](https://github.com/${{ github.repository }}/actions/workflows/update-pricing.yml)
+            
+            cc @${{ github.repository_owner }}`;
+            
+            // Check if similar issue already exists
+            const issues = await github.rest.issues.listForRepo({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              state: 'open',
+              labels: 'stale-data'
+            });
+            
+            if (issues.data.length === 0) {
+              await github.rest.issues.create({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                title: title,
+                body: body,
+                labels: ['stale-data', 'automated']
+              });
+            }
+      
+      - name: Upload analysis report
+        uses: actions/upload-artifact@v3
+        with:
+          name: pricing-analysis
+          path: pricing-report.json
+      
+      - name: Update workflow badge
+        run: |
+          echo "Monitor workflow completed at $(date -u +%Y-%m-%d\ %H:%M:%S) UTC"

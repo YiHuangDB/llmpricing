@@ -1,0 +1,519 @@
+{
+  "lastUpdated": "2025-08-11T05:20:08.383Z",
+  "providers": [
+    {
+      "name": "OpenAI",
+      "website": "https://openai.com/pricing",
+      "models": [
+        {
+          "name": "GPT-4o",
+          "modelId": "gpt-4o",
+          "contextWindow": 128000,
+          "pricing": {
+            "input": 2.5,
+            "output": 10,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Vision",
+            "Function Calling",
+            "JSON Mode"
+          ],
+          "category": "flagship"
+        },
+        {
+          "name": "GPT-4o mini",
+          "modelId": "gpt-4o-mini",
+          "contextWindow": 128000,
+          "pricing": {
+            "input": 0.15,
+            "output": 0.6,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Vision",
+            "Function Calling",
+            "JSON Mode"
+          ],
+          "category": "efficient"
+        },
+        {
+          "name": "GPT-4 Turbo",
+          "modelId": "gpt-4-turbo",
+          "contextWindow": 128000,
+          "pricing": {
+            "input": 10,
+            "output": 30,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Vision",
+            "Function Calling",
+            "JSON Mode"
+          ],
+          "category": "flagship"
+        },
+        {
+          "name": "GPT-3.5 Turbo",
+          "modelId": "gpt-3.5-turbo",
+          "contextWindow": 16385,
+          "pricing": {
+            "input": 0.5,
+            "output": 1.5,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Function Calling",
+            "JSON Mode"
+          ],
+          "category": "efficient"
+        },
+        {
+          "name": "o1-preview",
+          "modelId": "o1-preview",
+          "contextWindow": 128000,
+          "pricing": {
+            "input": 15,
+            "output": 60,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Reasoning",
+            "Complex Tasks"
+          ],
+          "category": "reasoning"
+        },
+        {
+          "name": "o1-mini",
+          "modelId": "o1-mini",
+          "contextWindow": 128000,
+          "pricing": {
+            "input": 3,
+            "output": 12,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Reasoning",
+            "STEM"
+          ],
+          "category": "reasoning"
+        }
+      ]
+    },
+    {
+      "name": "Anthropic",
+      "website": "https://www.anthropic.com/pricing",
+      "models": [
+        {
+          "name": "Claude 3.5 Sonnet",
+          "modelId": "claude-3-5-sonnet-20241022",
+          "contextWindow": 200000,
+          "pricing": {
+            "input": 3,
+            "output": 15,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Vision",
+            "Function Calling",
+            "200K Context"
+          ],
+          "category": "flagship"
+        },
+        {
+          "name": "Claude 3.5 Haiku",
+          "modelId": "claude-3-5-haiku-20241022",
+          "contextWindow": 200000,
+          "pricing": {
+            "input": 1,
+            "output": 5,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Vision",
+            "Function Calling",
+            "200K Context"
+          ],
+          "category": "efficient"
+        },
+        {
+          "name": "Claude 3 Opus",
+          "modelId": "claude-3-opus-20240229",
+          "contextWindow": 200000,
+          "pricing": {
+            "input": 15,
+            "output": 75,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Vision",
+            "Complex Analysis",
+            "200K Context"
+          ],
+          "category": "flagship"
+        },
+        {
+          "name": "Claude 3 Sonnet",
+          "modelId": "claude-3-sonnet-20240229",
+          "contextWindow": 200000,
+          "pricing": {
+            "input": 3,
+            "output": 15,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Vision",
+            "Balance",
+            "200K Context"
+          ],
+          "category": "balanced"
+        },
+        {
+          "name": "Claude 3 Haiku",
+          "modelId": "claude-3-haiku-20240307",
+          "contextWindow": 200000,
+          "pricing": {
+            "input": 0.25,
+            "output": 1.25,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Vision",
+            "Fast",
+            "200K Context"
+          ],
+          "category": "efficient"
+        }
+      ]
+    },
+    {
+      "name": "Google AI",
+      "website": "https://ai.google.dev/pricing",
+      "models": [
+        {
+          "name": "Gemini 1.5 Pro",
+          "modelId": "gemini-1.5-pro",
+          "contextWindow": 2000000,
+          "pricing": {
+            "input": 1.25,
+            "output": 5,
+            "unit": "per 1M tokens",
+            "note": "Up to 128K context"
+          },
+          "features": [
+            "Vision",
+            "Audio",
+            "2M Context",
+            "Function Calling"
+          ],
+          "category": "flagship"
+        },
+        {
+          "name": "Gemini 1.5 Flash",
+          "modelId": "gemini-1.5-flash",
+          "contextWindow": 1000000,
+          "pricing": {
+            "input": 0.075,
+            "output": 0.3,
+            "unit": "per 1M tokens",
+            "note": "Up to 128K context"
+          },
+          "features": [
+            "Vision",
+            "Audio",
+            "1M Context",
+            "Function Calling"
+          ],
+          "category": "efficient"
+        },
+        {
+          "name": "Gemini 1.5 Flash-8B",
+          "modelId": "gemini-1.5-flash-8b",
+          "contextWindow": 1000000,
+          "pricing": {
+            "input": 0.0375,
+            "output": 0.15,
+            "unit": "per 1M tokens",
+            "note": "Up to 128K context"
+          },
+          "features": [
+            "Vision",
+            "Audio",
+            "1M Context",
+            "Function Calling"
+          ],
+          "category": "efficient"
+        },
+        {
+          "name": "Gemini 2.0 Flash",
+          "modelId": "gemini-2.0-flash-exp",
+          "contextWindow": 1000000,
+          "pricing": {
+            "input": 0,
+            "output": 0,
+            "unit": "per 1M tokens",
+            "note": "Free during experimental phase"
+          },
+          "features": [
+            "Vision",
+            "Audio",
+            "1M Context",
+            "Multimodal Output"
+          ],
+          "category": "experimental"
+        }
+      ]
+    },
+    {
+      "name": "Meta (via cloud providers)",
+      "website": "https://ai.meta.com/llama/",
+      "models": [
+        {
+          "name": "Llama 3.3 70B",
+          "modelId": "llama-3.3-70b-instruct",
+          "contextWindow": 128000,
+          "pricing": {
+            "input": 0.88,
+            "output": 0.88,
+            "unit": "per 1M tokens",
+            "note": "AWS Bedrock pricing"
+          },
+          "features": [
+            "Open Source",
+            "128K Context",
+            "Instruction Following"
+          ],
+          "category": "open-source"
+        },
+        {
+          "name": "Llama 3.2 90B",
+          "modelId": "llama-3.2-90b-instruct",
+          "contextWindow": 128000,
+          "pricing": {
+            "input": 1.18,
+            "output": 1.18,
+            "unit": "per 1M tokens",
+            "note": "AWS Bedrock pricing"
+          },
+          "features": [
+            "Open Source",
+            "Vision",
+            "128K Context"
+          ],
+          "category": "open-source"
+        },
+        {
+          "name": "Llama 3.2 11B",
+          "modelId": "llama-3.2-11b-instruct",
+          "contextWindow": 128000,
+          "pricing": {
+            "input": 0.06,
+            "output": 0.06,
+            "unit": "per 1M tokens",
+            "note": "AWS Bedrock pricing"
+          },
+          "features": [
+            "Open Source",
+            "Vision",
+            "128K Context"
+          ],
+          "category": "open-source"
+        },
+        {
+          "name": "Llama 3.2 3B",
+          "modelId": "llama-3.2-3b-instruct",
+          "contextWindow": 128000,
+          "pricing": {
+            "input": 0.04,
+            "output": 0.04,
+            "unit": "per 1M tokens",
+            "note": "AWS Bedrock pricing"
+          },
+          "features": [
+            "Open Source",
+            "Efficient",
+            "128K Context"
+          ],
+          "category": "open-source"
+        }
+      ]
+    },
+    {
+      "name": "Mistral AI",
+      "website": "https://mistral.ai/technology/#pricing",
+      "models": [
+        {
+          "name": "Mistral Large",
+          "modelId": "mistral-large-latest",
+          "contextWindow": 128000,
+          "pricing": {
+            "input": 2,
+            "output": 6,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Function Calling",
+            "JSON Mode",
+            "128K Context"
+          ],
+          "category": "flagship"
+        },
+        {
+          "name": "Mistral Small",
+          "modelId": "mistral-small-latest",
+          "contextWindow": 32000,
+          "pricing": {
+            "input": 0.2,
+            "output": 0.6,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Function Calling",
+            "JSON Mode",
+            "32K Context"
+          ],
+          "category": "efficient"
+        },
+        {
+          "name": "Codestral",
+          "modelId": "codestral-latest",
+          "contextWindow": 32000,
+          "pricing": {
+            "input": 0.2,
+            "output": 0.6,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Code Generation",
+            "80+ Languages",
+            "32K Context"
+          ],
+          "category": "specialized"
+        },
+        {
+          "name": "Pixtral 12B",
+          "modelId": "pixtral-12b-2409",
+          "contextWindow": 128000,
+          "pricing": {
+            "input": 0.15,
+            "output": 0.15,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Vision",
+            "Multimodal",
+            "128K Context"
+          ],
+          "category": "multimodal"
+        }
+      ]
+    },
+    {
+      "name": "Cohere",
+      "website": "https://cohere.com/pricing",
+      "models": [
+        {
+          "name": "Command R+",
+          "modelId": "command-r-plus",
+          "contextWindow": 128000,
+          "pricing": {
+            "input": 2.5,
+            "output": 10,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "RAG Optimized",
+            "Tool Use",
+            "128K Context"
+          ],
+          "category": "flagship"
+        },
+        {
+          "name": "Command R",
+          "modelId": "command-r",
+          "contextWindow": 128000,
+          "pricing": {
+            "input": 0.15,
+            "output": 0.6,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "RAG Optimized",
+            "Tool Use",
+            "128K Context"
+          ],
+          "category": "efficient"
+        },
+        {
+          "name": "Command",
+          "modelId": "command",
+          "contextWindow": 4000,
+          "pricing": {
+            "input": 1,
+            "output": 2,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "General Purpose",
+            "4K Context"
+          ],
+          "category": "balanced"
+        }
+      ]
+    },
+    {
+      "name": "Amazon Bedrock",
+      "website": "https://aws.amazon.com/bedrock/pricing/",
+      "models": [
+        {
+          "name": "Amazon Nova Pro",
+          "modelId": "amazon.nova-pro-v1",
+          "contextWindow": 300000,
+          "pricing": {
+            "input": 0.8,
+            "output": 3.2,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Multimodal",
+            "300K Context",
+            "Video Understanding"
+          ],
+          "category": "flagship"
+        },
+        {
+          "name": "Amazon Nova Lite",
+          "modelId": "amazon.nova-lite-v1",
+          "contextWindow": 300000,
+          "pricing": {
+            "input": 0.06,
+            "output": 0.24,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Multimodal",
+            "300K Context",
+            "Cost-Effective"
+          ],
+          "category": "efficient"
+        },
+        {
+          "name": "Amazon Nova Micro",
+          "modelId": "amazon.nova-micro-v1",
+          "contextWindow": 128000,
+          "pricing": {
+            "input": 0.035,
+            "output": 0.14,
+            "unit": "per 1M tokens"
+          },
+          "features": [
+            "Text Only",
+            "128K Context",
+            "Low Latency"
+          ],
+          "category": "efficient"
+        }
+      ]
+    }
+  ]
+}

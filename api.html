@@ -1,0 +1,481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>LLM Pricing API Documentation</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .card {
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            margin-bottom: 30px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            color: #2d3748;
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        h2 {
+            color: #2d3748;
+            font-size: 1.8rem;
+            margin: 30px 0 15px 0;
+        }
+
+        h3 {
+            color: #4a5568;
+            font-size: 1.3rem;
+            margin: 20px 0 10px 0;
+        }
+
+        p {
+            color: #718096;
+            line-height: 1.6;
+            margin-bottom: 15px;
+        }
+
+        code {
+            background: #f7fafc;
+            padding: 2px 6px;
+            border-radius: 4px;
+            font-family: 'Courier New', monospace;
+            color: #e53e3e;
+        }
+
+        pre {
+            background: #2d3748;
+            color: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 15px 0;
+        }
+
+        .endpoint {
+            background: #edf2f7;
+            border-left: 4px solid #667eea;
+            padding: 15px;
+            margin: 20px 0;
+            border-radius: 4px;
+        }
+
+        .method {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #48bb78;
+            color: white;
+            border-radius: 4px;
+            font-weight: 600;
+            font-size: 0.9rem;
+            margin-right: 10px;
+        }
+
+        .url {
+            font-family: 'Courier New', monospace;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .example-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 20px;
+            margin: 20px 0;
+        }
+
+        .example-card {
+            background: #f7fafc;
+            padding: 20px;
+            border-radius: 8px;
+            border: 2px solid #e2e8f0;
+        }
+
+        .example-card h4 {
+            color: #2d3748;
+            margin-bottom: 10px;
+        }
+
+        .button {
+            display: inline-block;
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            text-decoration: none;
+            border-radius: 8px;
+            font-weight: 600;
+            transition: all 0.3s;
+            margin: 10px 10px 10px 0;
+        }
+
+        .button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .button-secondary {
+            background: linear-gradient(135deg, #48bb78 0%, #38a169 100%);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+        }
+
+        th, td {
+            text-align: left;
+            padding: 12px;
+            border-bottom: 1px solid #e2e8f0;
+        }
+
+        th {
+            background: #f7fafc;
+            color: #2d3748;
+            font-weight: 600;
+        }
+
+        .badge {
+            display: inline-block;
+            padding: 4px 8px;
+            background: #edf2f7;
+            border-radius: 4px;
+            font-size: 0.85rem;
+            margin: 2px;
+            color: #4a5568;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="card">
+            <h1>LLM Pricing API Documentation</h1>
+            <p>Access real-time LLM pricing data programmatically through our static JSON API.</p>
+            
+            <div style="margin: 20px 0;">
+                <a href="index.html" class="button">View Pricing Table</a>
+                <a href="data/llm-pricing.json" class="button button-secondary" download>Download JSON</a>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Quick Start</h2>
+            
+            <div class="endpoint">
+                <span class="method">GET</span>
+                <span class="url">https://[your-username].github.io/llmpricing/data/llm-pricing.json</span>
+            </div>
+
+            <h3>JavaScript Example</h3>
+            <pre><code>// Fetch LLM pricing data
+fetch('https://[your-username].github.io/llmpricing/data/llm-pricing.json')
+  .then(response => response.json())
+  .then(data => {
+    // Get all OpenAI models
+    const openai = data.providers.find(p => p.name === 'OpenAI');
+    console.log('OpenAI models:', openai.models);
+    
+    // Find cheapest model
+    const allModels = data.providers.flatMap(p => 
+      p.models.map(m => ({...m, provider: p.name}))
+    );
+    const cheapest = allModels.sort((a, b) => 
+      a.pricing.input - b.pricing.input
+    )[0];
+    console.log('Cheapest model:', cheapest);
+  });</code></pre>
+
+            <h3>Python Example</h3>
+            <pre><code>import requests
+import json
+
+# Fetch LLM pricing data
+response = requests.get('https://[your-username].github.io/llmpricing/data/llm-pricing.json')
+data = response.json()
+
+# Get all Anthropic models
+anthropic = next((p for p in data['providers'] if p['name'] == 'Anthropic'), None)
+if anthropic:
+    for model in anthropic['models']:
+        print(f"{model['name']}: ${model['pricing']['input']}/1M tokens")
+
+# Find models with vision capabilities
+vision_models = []
+for provider in data['providers']:
+    for model in provider['models']:
+        if 'Vision' in model.get('features', []):
+            vision_models.append({
+                'provider': provider['name'],
+                'model': model['name'],
+                'price': model['pricing']['input']
+            })</code></pre>
+
+            <h3>cURL Example</h3>
+            <pre><code># Get raw JSON data
+curl https://[your-username].github.io/llmpricing/data/llm-pricing.json
+
+# Pretty print with jq
+curl https://[your-username].github.io/llmpricing/data/llm-pricing.json | jq '.'
+
+# Get just OpenAI pricing
+curl https://[your-username].github.io/llmpricing/data/llm-pricing.json | \
+  jq '.providers[] | select(.name == "OpenAI")'</code></pre>
+        </div>
+
+        <div class="card">
+            <h2>Data Structure</h2>
+            
+            <h3>Root Object</h3>
+            <table>
+                <tr>
+                    <th>Field</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>lastUpdated</code></td>
+                    <td>string (ISO 8601)</td>
+                    <td>Timestamp of last data update</td>
+                </tr>
+                <tr>
+                    <td><code>providers</code></td>
+                    <td>array</td>
+                    <td>List of LLM providers</td>
+                </tr>
+            </table>
+
+            <h3>Provider Object</h3>
+            <table>
+                <tr>
+                    <th>Field</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>name</code></td>
+                    <td>string</td>
+                    <td>Provider name (e.g., "OpenAI", "Anthropic")</td>
+                </tr>
+                <tr>
+                    <td><code>website</code></td>
+                    <td>string</td>
+                    <td>Provider's pricing page URL</td>
+                </tr>
+                <tr>
+                    <td><code>models</code></td>
+                    <td>array</td>
+                    <td>List of available models</td>
+                </tr>
+            </table>
+
+            <h3>Model Object</h3>
+            <table>
+                <tr>
+                    <th>Field</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>name</code></td>
+                    <td>string</td>
+                    <td>Display name of the model</td>
+                </tr>
+                <tr>
+                    <td><code>modelId</code></td>
+                    <td>string</td>
+                    <td>API identifier for the model</td>
+                </tr>
+                <tr>
+                    <td><code>contextWindow</code></td>
+                    <td>number</td>
+                    <td>Maximum context length in tokens</td>
+                </tr>
+                <tr>
+                    <td><code>pricing</code></td>
+                    <td>object</td>
+                    <td>Pricing information</td>
+                </tr>
+                <tr>
+                    <td><code>features</code></td>
+                    <td>array</td>
+                    <td>List of model capabilities</td>
+                </tr>
+                <tr>
+                    <td><code>category</code></td>
+                    <td>string</td>
+                    <td>Model category (flagship, efficient, etc.)</td>
+                </tr>
+            </table>
+
+            <h3>Pricing Object</h3>
+            <table>
+                <tr>
+                    <th>Field</th>
+                    <th>Type</th>
+                    <th>Description</th>
+                </tr>
+                <tr>
+                    <td><code>input</code></td>
+                    <td>number</td>
+                    <td>Cost per 1M input tokens (USD)</td>
+                </tr>
+                <tr>
+                    <td><code>output</code></td>
+                    <td>number</td>
+                    <td>Cost per 1M output tokens (USD)</td>
+                </tr>
+                <tr>
+                    <td><code>unit</code></td>
+                    <td>string</td>
+                    <td>Pricing unit (usually "per 1M tokens")</td>
+                </tr>
+                <tr>
+                    <td><code>note</code></td>
+                    <td>string (optional)</td>
+                    <td>Additional pricing information</td>
+                </tr>
+            </table>
+        </div>
+
+        <div class="card">
+            <h2>Common Use Cases</h2>
+            
+            <div class="example-grid">
+                <div class="example-card">
+                    <h4>Find Cheapest Model</h4>
+                    <pre><code>const cheapest = data.providers
+  .flatMap(p => p.models)
+  .sort((a, b) => 
+    a.pricing.input - b.pricing.input
+  )[0];</code></pre>
+                </div>
+
+                <div class="example-card">
+                    <h4>Filter by Context Window</h4>
+                    <pre><code>const longContext = data.providers
+  .flatMap(p => p.models)
+  .filter(m => 
+    m.contextWindow >= 100000
+  );</code></pre>
+                </div>
+
+                <div class="example-card">
+                    <h4>Get Vision Models</h4>
+                    <pre><code>const visionModels = data.providers
+  .flatMap(p => p.models)
+  .filter(m => 
+    m.features.includes('Vision')
+  );</code></pre>
+                </div>
+
+                <div class="example-card">
+                    <h4>Calculate Token Cost</h4>
+                    <pre><code>function calculateCost(model, inputTokens, outputTokens) {
+  const inputCost = (inputTokens / 1000000) * model.pricing.input;
+  const outputCost = (outputTokens / 1000000) * model.pricing.output;
+  return inputCost + outputCost;
+}</code></pre>
+                </div>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Model Categories</h2>
+            
+            <p>Models are categorized to help you find the right balance of performance and cost:</p>
+            
+            <div style="margin: 20px 0;">
+                <span class="badge" style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); color: white;">flagship</span>
+                <span>Most capable models with highest performance</span>
+            </div>
+            <div style="margin: 20px 0;">
+                <span class="badge" style="background: linear-gradient(135deg, #48bb78 0%, #38a169 100%); color: white;">efficient</span>
+                <span>Cost-effective models for high-volume use</span>
+            </div>
+            <div style="margin: 20px 0;">
+                <span class="badge" style="background: linear-gradient(135deg, #4299e1 0%, #3182ce 100%); color: white;">balanced</span>
+                <span>Good balance of capability and cost</span>
+            </div>
+            <div style="margin: 20px 0;">
+                <span class="badge" style="background: linear-gradient(135deg, #ed8936 0%, #dd6b20 100%); color: white;">reasoning</span>
+                <span>Specialized for complex reasoning tasks</span>
+            </div>
+            <div style="margin: 20px 0;">
+                <span class="badge" style="background: linear-gradient(135deg, #9f7aea 0%, #805ad5 100%); color: white;">open-source</span>
+                <span>Open source models available through cloud providers</span>
+            </div>
+        </div>
+
+        <div class="card">
+            <h2>Update Frequency</h2>
+            
+            <p>The pricing data is automatically updated daily at 2:00 AM UTC through GitHub Actions.</p>
+            <p>Updates are fetched from official provider websites and APIs where available.</p>
+            
+            <h3>Data Sources</h3>
+            <ul style="margin-left: 20px; color: #718096; line-height: 1.8;">
+                <li>OpenAI: Official pricing page</li>
+                <li>Anthropic: Official pricing page</li>
+                <li>Google AI: AI Studio pricing</li>
+                <li>Meta Llama: AWS Bedrock pricing</li>
+                <li>Mistral AI: Official pricing page</li>
+                <li>Cohere: Official pricing page</li>
+                <li>Amazon Bedrock: AWS pricing page</li>
+            </ul>
+        </div>
+
+        <div class="card">
+            <h2>Rate Limits & Usage</h2>
+            
+            <p>This is a static JSON file hosted on GitHub Pages with no rate limits.</p>
+            <p>Feel free to cache the data locally and check the <code>lastUpdated</code> field for freshness.</p>
+            
+            <h3>Recommended Caching Strategy</h3>
+            <pre><code>const CACHE_DURATION = 3600000; // 1 hour in milliseconds
+
+async function getPricingData() {
+  const cached = localStorage.getItem('llm-pricing');
+  
+  if (cached) {
+    const data = JSON.parse(cached);
+    const age = Date.now() - new Date(data.cachedAt).getTime();
+    
+    if (age < CACHE_DURATION) {
+      return data;
+    }
+  }
+  
+  const response = await fetch('https://[your-username].github.io/llmpricing/data/llm-pricing.json');
+  const data = await response.json();
+  
+  localStorage.setItem('llm-pricing', JSON.stringify({
+    ...data,
+    cachedAt: new Date().toISOString()
+  }));
+  
+  return data;
+}</code></pre>
+        </div>
+    </div>
+</body>
+</html>

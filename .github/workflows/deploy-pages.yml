@@ -1,0 +1,67 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - 'index.html'
+      - 'api.html'
+      - 'data/**'
+      - '*.css'
+      - '*.js'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: "pages"
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+      
+      - name: Validate JSON data
+        run: |
+          echo "Validating JSON structure..."
+          jq '.' data/llm-pricing.json > /dev/null
+          echo "✅ JSON is valid"
+      
+      - name: Generate statistics
+        run: |
+          MODEL_COUNT=$(jq '[.providers[].models | length] | add' data/llm-pricing.json)
+          PROVIDER_COUNT=$(jq '.providers | length' data/llm-pricing.json)
+          LAST_UPDATED=$(jq -r '.lastUpdated' data/llm-pricing.json)
+          
+          echo "## LLM Pricing Statistics" > stats.md
+          echo "- **Providers**: $PROVIDER_COUNT" >> stats.md
+          echo "- **Models**: $MODEL_COUNT" >> stats.md
+          echo "- **Last Updated**: $LAST_UPDATED" >> stats.md
+          
+          cat stats.md
+      
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+  
+  deploy:
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    runs-on: ubuntu-latest
+    needs: build
+    steps:
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4

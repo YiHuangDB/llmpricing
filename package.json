@@ -1,0 +1,29 @@
+{
+  "name": "llm-pricing",
+  "version": "1.0.0",
+  "description": "LLM Pricing Comparison - Static JSON API and Web Interface",
+  "main": "index.js",
+  "scripts": {
+    "update-prices": "node scripts/update-pricing.js",
+    "serve": "npx http-server -p 8080",
+    "test": "playwright test"
+  },
+  "keywords": [
+    "llm",
+    "pricing",
+    "api",
+    "openai",
+    "anthropic",
+    "google",
+    "gemini"
+  ],
+  "author": "",
+  "license": "MIT",
+  "dependencies": {
+    "playwright": "^1.40.0"
+  },
+  "devDependencies": {
+    "@playwright/test": "^1.40.0",
+    "http-server": "^14.1.1"
+  }
+}
